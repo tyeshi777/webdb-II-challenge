@@ -59,4 +59,41 @@ router.post("/", (req, res) => {
   }
 });
 
+router.put("/:id", (req, res) => {
+  db("bears")
+    .where({ id: req.params.id })
+    .update(req.body)
+    .then(count => {
+      if (count > 0) {
+        res.status(200).json({
+          message: `${count} ${count > 1 ? "records" : "record"} updated`
+        });
+      } else {
+        res.status(404).json({ message: "no such bear exists" });
+      }
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+});
+
+router.delete("/:id", (req, res) => {
+  db("bears")
+    .where({ id: req.params.id })
+    .del()
+    .then(count => {
+      if (count > 0) {
+        res.status(200).json({
+          message: `${count} ${count > 1 ? "records" : "record"} deleted`
+        });
+      } else {
+        res
+          .status(400)
+          .json({ message: "you cannot delete something that don't exists" });
+      }
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+});
 module.exports = router;
